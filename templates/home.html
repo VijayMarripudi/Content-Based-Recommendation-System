@@ -1,20 +1,19 @@
-<html>
-    <head>
-        <title>
-            MOVIE RECOMMENDATION SYSTEM
-        </title>
-        <link rel="stylesheet" href="/static/style.css"/>
-    </head>
-    <body>
-        <center>
-        <h2>WELCOME TO THE MOVIE RECOMMENDATION SYSTEM </h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Movie Recommendation System</h1>
         <form action="http://localhost:5000/recommend" method="post">
-            &nbsp;
-            <p>ENTER MOVIE NAME</p>
-            <input type="text" name="a"/><br/>
-            <p>             </p>
-            <input type="submit" value="recommend" />
+            <label for="movie_name">Enter Movie Name:</label>
+            <input type="text" id="movie_name" name="a">
+            <button type="submit" class="btn">Recommend</button>
         </form>
-        </center>
-    </body>
+    </div>
+</body>
 </html>

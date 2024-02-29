@@ -7,8 +7,8 @@ from sklearn.metrics.pairwise import linear_kernel
 from ast import literal_eval
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from surprise import Reader, Dataset, SVD
-from surprise.model_selection import cross_validate
+#from surprise import Reader, Dataset, SVD
+#from surprise.model_selection import cross_validate
 
 movies= pd.read_csv('tmdb_3000_movies.csv')
 df = pd.read_csv('tmdb_3000_credits.csv')
@@ -75,13 +75,13 @@ count_matrix = count.fit_transform(movies['soup'])
 
 cosin_sim2 = cosine_similarity(count_matrix, count_matrix)
 
-reader = Reader()
-ratings = pd.read_csv('ratings_small.csv')
-data=Dataset.load_from_df(ratings[['userId','movieId','rating']],reader)
-svd=SVD()
-cross=cross_validate(svd,data,measures=['RMSE'],cv=3,verbose=True)
-train = data.build_full_trainset()
-sfit=svd.fit(train)
+#reader = Reader()
+#ratings = pd.read_csv('ratings_small.csv')
+#data=Dataset.load_from_df(ratings[['userId','movieId','rating']],reader)
+#svd=SVD()
+#cross=cross_validate(svd,data,measures=['RMSE'],cv=3,verbose=True)
+#train = data.build_full_trainset()
+#sfit=svd.fit(train)
 movie_id = pd.read_csv('links.csv')[['movieId', 'tmdbId']]
 movie_id.columns = ['movieId','id']
 movie_id = movie_id.merge(movies[['title', 'id']], on='id').set_index('title')
@@ -101,13 +101,20 @@ def recommend_for(userId,title):
     sim_scores = sim_scores[1:30]
     movie_indices = [i[0] for i in sim_scores]
     mv = movies.iloc[movie_indices][['title', 'vote_count', 'vote_average', 'id']]
+    name = mv['title'].head(6).tolist()
     mv = mv[mv['id'].isin(movie_id['id'])]
     # CF
-    mv['est'] = mv['id'].apply(lambda x: svd.predict(userId, index_map.loc[x]['movieId']).est)
+    #mv['est'] = mv['id'].apply(lambda x: svd.predict(userId, index_map.loc[x]['movieId']).est)
     #mv = mv.sort_values('est', ascending=False)
-    k=mv.head(5)
-    l=k.index.tolist()
+    k=mv.head(6)
+    k=k.index.tolist()
+    l=[]
+    l.append(k)
+    l.append(name)
     return l
+    
+
+
 app=Flask(__name__)
 @app.route('/')
 def recom():
@@ -118,7 +125,7 @@ def recommend():
     u=1
     n=data1.capitalize()
     genre=["Fantasy","Action","Adventure","Science Fiction","Crime","Drama","Thriller","Animation","Family","Western","Romance","Comedy","Horror","Mystery","War","History","Music",]
-    if len(n)>=3:
+    '''if len(n)>=3:
         if n in genre:
             v=mov["genres"]
             cou=2
@@ -127,7 +134,7 @@ def recommend():
                 i=str(i)
                 if n in i:
                     l.append(cou)
-                if len(l)==5:
+                if len(l)==6:
                     break
                 cou+=1
             POSTER_FOLDER=os.path.join('static','posters')
@@ -139,42 +146,57 @@ def recommend():
                 c=str(l[2]+2)+".jpg"
                 d=str(l[3]+2)+".jpg"
                 e=str(l[4]+2)+".jpg"
+                f=str(l[5]+2)+".jpg"
                 full_filename1=os.path.join(app.config['UPLOAD_FOLDER'],a)
                 full_filename2=os.path.join(app.config['UPLOAD_FOLDER'],b)
                 full_filename3=os.path.join(app.config['UPLOAD_FOLDER'],c)
                 full_filename4=os.path.join(app.config['UPLOAD_FOLDER'],d)
                 full_filename5=os.path.join(app.config['UPLOAD_FOLDER'],e)
-                return render_template("after.html",user_image1=full_filename1,user_image2=full_filename2,user_image3=full_filename3,user_image4=full_filename4,user_image5=full_filename5,user_image6=n)
+                full_filename6=os.path.join(app.config['UPLOAD_FOLDER'],f)
+                return render_template("after.html",user_image1=full_filename1,user_image2=full_filename2,user_image3=full_filename3,user_image4=full_filename4,user_image5=full_filename5,user_image6=n,user_image7=full_filename6)
             else:
                 return render_template("error.html")
         else:
-        
-            m=j[j['original_title'].str.contains(n)]
-            try:
-                m=m["original_title"].values[0]
-            except:
-                return render_template("error.html")
-            l=recommend_for(u,m)
+        '''
+    m=j[j['original_title'].str.contains(n)]
+    try:
+        m=m["original_title"].values[0]
+    except:
+        return render_template("error.html")
+    l=recommend_for(u,m)
+    k=l[1]
+    l=l[0]
+        #print(k)
+        #print(l)
             # to display images in new web page
-            POSTER_FOLDER=os.path.join('static','posters')
-            app.config['UPLOAD_FOLDER']=POSTER_FOLDER
+    POSTER_FOLDER=os.path.join('static','posters')
+    app.config['UPLOAD_FOLDER']=POSTER_FOLDER
     
-            if len(l)!=0:
-                a=str(l[0]+2)+".jpg"
-                b=str(l[1]+2)+".jpg"
-                c=str(l[2]+2)+".jpg"
-                d=str(l[3]+2)+".jpg"
-                e=str(l[4]+2)+".jpg"
-                full_filename1=os.path.join(app.config['UPLOAD_FOLDER'],a)
-                full_filename2=os.path.join(app.config['UPLOAD_FOLDER'],b)
-                full_filename3=os.path.join(app.config['UPLOAD_FOLDER'],c)
-                full_filename4=os.path.join(app.config['UPLOAD_FOLDER'],d)
-                full_filename5=os.path.join(app.config['UPLOAD_FOLDER'],e)
-                return render_template("after.html",user_image1=full_filename1,user_image2=full_filename2,user_image3=full_filename3,user_image4=full_filename4,user_image5=full_filename5,user_image6=m)
-            else:
-                return render_template("error.html")
+    if len(l)!=0:
+        a=str(l[0]+2)+".jpg"
+        b=str(l[1]+2)+".jpg"
+        c=str(l[2]+2)+".jpg"
+        d=str(l[3]+2)+".jpg"
+        e=str(l[4]+2)+".jpg"
+        f=str(l[5]+2)+".jpg"
+        full_filename1=os.path.join(app.config['UPLOAD_FOLDER'],a)
+        full_filename2=os.path.join(app.config['UPLOAD_FOLDER'],b)
+        full_filename3=os.path.join(app.config['UPLOAD_FOLDER'],c)
+        full_filename4=os.path.join(app.config['UPLOAD_FOLDER'],d)
+        full_filename5=os.path.join(app.config['UPLOAD_FOLDER'],e)
+        full_filename6=os.path.join(app.config['UPLOAD_FOLDER'],f)
+        name1=k[0]
+        name2=k[1]
+        name3=k[2]
+        name4=k[3]
+        name5=k[4]
+        name6=k[5]
+                
+        return render_template("after.html",user_image1=full_filename1,user_image2=full_filename2,user_image3=full_filename3,user_image4=full_filename4,user_image5=full_filename5,user_image6=m,user_image7=full_filename6,name1=name1,name2=name2,name3=name3,name4=name4,name5=name5,name6=name6)
     else:
         return render_template("error.html")
+    '''else:
+        return render_template("error.html")'''
 
 if __name__=='__main__':
     app.run(debug =False)

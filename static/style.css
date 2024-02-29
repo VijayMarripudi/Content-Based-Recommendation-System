@@ -1,17 +1,81 @@
-.submit{
-    color: aliceblue;
-    background-color: darkblue;
+/* General styles */
+body {
+    background-color: #f5f5dc; /* Beige */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Button styles */
+.btn {
+    color: #fff; /* White */
+    background-color: #4682b4; /* Steel blue */
+    border: none;
     border-radius: 25px;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
 }
-body{
-    background-color: blanchedalmond;
-    align-content: center;
+
+.btn:hover {
+    background-color: #5f9ea0; /* Cadet blue */
 }
-p{
-    color: darkblue;
-    font-family: fantasy;
-    font-weight:bold;
+
+/* Form styles */
+form {
+    margin-top: 20px;
 }
-input{
-    font-family: fantasy;
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"] {
+    font-family: Arial, sans-serif; /* Avoid using fantasy font for input */
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+/* Error message styles */
+.error-message {
+    color: #ff0000; /* Red */
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Recommendation styles */
+.recommendations {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.recommendation {
+    width: 45%;
+    margin-bottom: 20px;
+}
+
+.recommendation img {
+    width: 100%; /* Adjust the width here */
+    max-height: 200px; /* Limit the maximum height */
+    height: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Back to search styles */
+.back-to-search {
+    text-align: center;
+    margin-top: 20px;
 }
